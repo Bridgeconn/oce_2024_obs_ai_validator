@@ -11,6 +11,7 @@ class Translations(Base):
     story_id = Column(Integer, index=True)
     language_id = Column(String)
     para_id = Column(Integer)
+    nllb_model_id = Column(String)
     original_string = Column(String)
     translated_string = Column(String)
 

@@ -1,10 +1,23 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import Depends, FastAPI,HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-from db import models, schemas
+from db import crud,models, schemas
 import json
+from sqlalchemy.orm import Session
+from db.database import SessionLocal, engine
 
 app = FastAPI()
 
+nllb_model = "facebook/nllb-200-distilled-1.3B"
+
+models.Base.metadata.create_all(bind=engine)
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 @app.get("/")
 def read_root():
@@ -41,26 +54,28 @@ async def split_file(item: schemas.MDFile):
     return story
 
 @app.get("/translate/{story_id}/{language_id}")
-async def translate(story_id: int, language_id:str):
-  
+async def translate(story_id: int, language_id:str, db: Session = Depends(get_db)):
+    # Get story from DB
+    translation = crud.get_story(db,story_id,language_id)
+    if len(translation)>0:
+        return {"story_id": story_id, "language_id": language_id, "translation": translation}
+
+    # Translate Story
     json_file = open('OBSTextData.json')
-    
     data = json.load(json_file)
-    
     filtered_elements = [el for el in data if el['storyId'] == story_id]     
     
     if(len(filtered_elements)==0):
       raise HTTPException(status_code=404, detail="Story not found!!")
     
-    # Setup Translater
-    model = AutoModelForSeq2SeqLM.from_pretrained("facebook/nllb-200-distilled-1.3B")
-    tokenizer = AutoTokenizer.from_pretrained("facebook/nllb-200-distilled-1.3B")
-    translator = pipeline('translation', model=model, tokenizer=tokenizer, src_lang="eng_Latn", tgt_lang='hin_Deva', max_length = 512)
+    # Setup Translator
+    model = AutoModelForSeq2SeqLM.from_pretrained(nllb_model)
+    tokenizer = AutoTokenizer.from_pretrained(nllb_model)
+    translator = pipeline('translation', model=model, tokenizer=tokenizer, src_lang="eng_Latn", tgt_lang=language_id, max_length = 512)
         
     story = filtered_elements[0]    
     story_array = story['story']
     translation = []
-    
     for story in story_array:
         split_lines = story['text']
         split_lines = split_lines.split('.')
@@ -70,15 +85,21 @@ async def translate(story_id: int, language_id:str):
                 text=translator(line)
                 translated_string += text[0]['translation_text']
         translation.append({'original': story['text'], 'translated': translated_string})
-
-    # Get the sentence from DB
-    # Check if story_id and language_id combo exist then return saved data
-    # 1.split the english story in paragraphs and then lines  (done)
-    # 2. translate the lines (done)
-    # 3. put it back into paragraphs (done)
-    # 4. store paragraphs in database
-    # 5. table - story_id, language_id, para_id, eng_string, translated_string
-    # 6. translate the english story into the target language and save in the database and return story_id and language_id
+        crud.save_story(db=db, story_id=story_id,language_id=language_id,para_id=story['id'], nllb_model_id=nllb_model,original_string=story['text'],translated_string=translated_string)
+        # return db_user
+    print(story_id)
+    print(language_id)
+    print(translation)
+    # Get the sentence from DB if exists
+    # 1. Check if story_id and language_id combo exist then return saved data ## Done
+    # Translate the english story into the target language and save in the database 
+    # 2. split the english story in paragraphs and then lines  ## Done
+    # 3. translate the lines ## Done
+    # 4. put it back into paragraphs ## Done
+    # 5. store paragraphs in database ## Done
+    # return story_id and language_id
+    # 6. return story_id, language_id, Translations ## Done
+    # DB table - story_id, language_id, para_id, eng_string, translated_string
     return {"story_id": story_id, "language_id": language_id, "translation": translation}
 
 
