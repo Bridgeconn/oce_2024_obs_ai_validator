@@ -8,9 +8,9 @@ class Translations(Base):
     __tablename__ = "translations"
 
     id = Column(Integer, primary_key=True)
-    story_id = Column(Integer, index=True) # Should we keep index or not?
+    story_id = Column(Integer, index=True)
     language_id = Column(String)
-    para_id = Column(Integer) #Para id will be index of translated array. will it be used at compare stage for one to many comparison?
+    para_id = Column(Integer)
     original_string = Column(String)
     translated_string = Column(String)
 

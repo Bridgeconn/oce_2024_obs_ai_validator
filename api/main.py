@@ -1,6 +1,7 @@
 from fastapi import FastAPI,HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
 from db import models, schemas
+import json
 
 app = FastAPI()
 
@@ -59,7 +60,6 @@ async def translate(story_id: int, language_id:str):
     story = filtered_elements[0]    
     story_array = story['story']
     translation = []
-
     
     for story in story_array:
         split_lines = story['text']
