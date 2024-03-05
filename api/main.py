@@ -4,9 +4,17 @@ from db import crud,models, schemas
 import json
 from sqlalchemy.orm import Session
 from db.database import SessionLocal, engine
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with your allowed origins
+    allow_credentials=True,  # Allow cookies if needed
+    allow_methods=["*"],  # Allow all methods (GET, POST, PUT, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 nllb_model = "facebook/nllb-200-distilled-1.3B"
 
 models.Base.metadata.create_all(bind=engine)
