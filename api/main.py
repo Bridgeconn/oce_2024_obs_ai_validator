@@ -1,6 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-from . import models, schemas
+from db import models, schemas
 
 app = FastAPI()
 
