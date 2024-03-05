@@ -11,9 +11,10 @@ It serves the UI with APIs to validate the uploaded MD file.
 2. VS Code
 3. Terminal
 4. pip or pip3
-5. 10 GB of system space
+5. 10 GB of disk space
 6. Ram 12 GB
 7. i5 11th Gen
+8. Internet connection to download 10GB data
 
 ## Steps to install
 
@@ -21,16 +22,24 @@ Run the following in the terminal to install the project
 
 ### Linux
 
-1. Create Virtual Environment, replace with the virtual environmet you want to use. `python -m venv [virtual_env_name]`. Example:
+1. Create a Python virtual environment, replace with the virtual environmet you want to use. `python -m venv [virtual_env_name]`. Example:
 
 ```
 python -m venv venv
 ```
 
-2. Activate Environment
+2. Activate the virtual environment
+
+Linux
 
 ```
 source venv/bin/activate
+```
+
+Windows
+
+```
+venv\Scripts\activat
 ```
 
 3. Install the requirements
@@ -39,20 +48,47 @@ source venv/bin/activate
 pip install transformers
 pip install fastapi
 pip install "uvicorn[standard]"
+pip install sqlalchemy
 ```
 
-Note: Below the last requirement for Linux computers without GPU, use the documentation for other computers like Mac or Windows or with a GPU- https://pytorch.org/get-started/locally/
+Note: The last command below installs the torch package without GPU, use this pytorch documentation Link [https://pytorch.org/get-started/locally](https://pytorch.org/get-started/locally) for MAC o GPU computers configurations.
+
+Linux CPU
 
 ```
 pip install torch --index-url https://download.pytorch.org/whl/cpu
+```
+
+Windows CPU
+
+```
+pip3 install torch torchvision torchaudio
 ```
 
 ## To run
 
 Run the following from the project folder in the terminal
 
+1. Activate Virtual Environment if not active from the folder that you installed the virtual environment in
+
+Linux
+
+```
+source venv/bin/activate
+```
+
+Windows
+
+```
+venv\Scripts\activat
+```
+
+2. Start the Fast API server
+
 ```
 uvicorn main:app --reload
 ```
 
-The Fast API server is not running on your local machine on the default port 8000 ie. http://127.0.0.1:8000. To view the swagger docs open [http://127.0.0.1:8000/docs#/](http://127.0.0.1:8000/docs#/) in a browser
+The Fast API server is now running on your local machine on the default port 8000 i.e. http://127.0.0.1:8000.
+
+The swagger docs for the API are available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)

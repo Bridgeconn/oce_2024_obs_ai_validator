@@ -69,7 +69,7 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
         return {"story_id": story_id, "language_id": language_id, "translation": translation}
 
     # Translate Story
-    json_file = open('OBSTextData.json')
+    json_file = open('OBSTextData.json', 'r', encoding='utf-8')
     data = json.load(json_file)
     filtered_elements = [el for el in data if el['storyId'] == story_id]     
     
