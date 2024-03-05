@@ -1,19 +1,16 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI,HTTPException
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM, pipeline
-import json
+from . import models, schemas
 
 app = FastAPI()
 
-class MDFile(BaseModel):
-    md: str
 
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
 
 @app.post("/split/")
-async def split_file(item: MDFile):
+async def split_file(item: schemas.MDFile):
     """
     Split a given MDFile into header, footer, and story, and return the structured story.
     
