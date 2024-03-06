@@ -5,6 +5,7 @@ import json
 from sqlalchemy.orm import Session
 from db.database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
+from datasets import load_metric
 
 app = FastAPI()
 
@@ -91,7 +92,7 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
         for line in split_lines:
             if(len(line)>0):
                 text=translator(line)
-                translated_string += text[0]['translation_text']
+                translated_string += " " + text[0]['translation_text'].strip()
         translation.append({'original': story['text'], 'translated': translated_string})
         crud.save_story(db=db, story_id=story_id,language_id=language_id,para_id=story['id'], nllb_model_id=nllb_model,original_string=story['text'],translated_string=translated_string)
         # return db_user
@@ -111,8 +112,16 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
     return {"story_id": story_id, "language_id": language_id, "translation": translation}
 
 
-@app.get("/compare/{story_id}/{language_id}/{para_id}")
-async def compare(story_id: str, language_id:str, para_id:str, translated_string: str ):
+@app.post("/compare/{story_id}/{language_id}")
+async def compare(story_id: str, language_id:str, translated_strings: list[schemas.Translation], db: Session = Depends(get_db) ):
+    translation = crud.get_story(db,story_id,language_id)
+    result = []
+    for a,b in zip(translation,translated_strings):
+        sacrebleu = load_metric("sacrebleu")
+        # score = sacrebleu.compute(predictions=[b.text],references= [[a.translated_string]])
+        score = sacrebleu.compute(predictions=[a.translated_string],references= [[b.text]])
+        result.append({"mt":a.translated_string,"manual":b.text,"score":score})
+
     # 1. fetch the story from the database
     # 2. compare the translated string with the original string
     # 3. high score - > positive
@@ -121,4 +130,4 @@ async def compare(story_id: str, language_id:str, para_id:str, translated_string
     # 6. Compare the translated string with all the story strings 
     # 7. if the max score is the same as the para number sent in url -> positive
     # 8. else negative,  give score with the maximum similarity and return para no and corresponding string
-    return {"story_id": story_id, "language_id": language_id, "para_id": para_id, "translated_string": translated_string}
+    return {"story_id": story_id, "language_id": language_id, "result":result}

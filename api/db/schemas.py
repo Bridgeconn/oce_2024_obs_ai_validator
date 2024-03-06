@@ -10,3 +10,7 @@ class CreateTranslation(BaseModel):
     nllb_model_id: str
     original_string: str
     translated_string: str
+
+class Translation(BaseModel):
+    text:str
+    
