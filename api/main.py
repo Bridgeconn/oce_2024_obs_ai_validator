@@ -63,14 +63,11 @@ async def split_file(item: schemas.MDFile):
 
 @app.get("/translate/{story_id}/{language_id}")
 async def translate(story_id: int, language_id:str, db: Session = Depends(get_db)):
-    # Get story from DB
-    translation = crud.get_story(db,story_id,language_id)
-    if len(translation)>0:
-        return {"story_id": story_id, "language_id": language_id, "translation": translation}
-
-    # Translate Story
     json_file = open('OBSTextData.json', 'r', encoding='utf-8')
     data = json.load(json_file)
+    # Get story from DB
+    translation = crud.get_story(db,story_id,language_id)
+    # Translate Story
     filtered_elements = [el for el in data if el['storyId'] == story_id]     
     
     if(len(filtered_elements)==0):
@@ -83,6 +80,8 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
         
     story = filtered_elements[0]    
     story_array = story['story']
+    if len(translation)==len(story_array):
+        return {"story_id": story_id, "language_id": language_id, "translation": translation}
     translation = []
     for story in story_array:
         split_lines = story['text']
@@ -95,9 +94,6 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
         translation.append({'original': story['text'], 'translated': translated_string})
         crud.save_story(db=db, story_id=story_id,language_id=language_id,para_id=story['id'], nllb_model_id=nllb_model,original_string=story['text'],translated_string=translated_string)
         # return db_user
-    print(story_id)
-    print(language_id)
-    print(translation)
     # Get the sentence from DB if exists
     # 1. Check if story_id and language_id combo exist then return saved data ## Done
     # Translate the english story into the target language and save in the database 
@@ -114,24 +110,19 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
 @app.post("/compare/{story_id}/{language_id}")
 async def compare(story_id: str, language_id:str, translated_strings: list[schemas.Translation], db: Session = Depends(get_db) ):
     mt_translation = crud.get_story(db,story_id,language_id)
-    print(mt_translation)
     result = []
-    compare_list=[]
-    compare_scores=[]
     for mt,manual in zip(mt_translation,translated_strings):
         score = sentence_bleu([mt.translated_string],manual.text)    
         if score < 0.60:
-            compare_list.append({"manual":manual.text,"mt":mt.translated_string,"para_id":mt.para_id})
+            com_score=[]
+            for index,texts in enumerate(translated_strings):
+                new_score = sentence_bleu([mt.translated_string],texts.text)    
+                com_score.append({"score":new_score,"text":texts.text,"para_id":index+1})
+            best_compare = max(com_score, key=lambda x: x['score'])           
+            result.append({"best_text":best_compare["text"],"manual":manual.text,"mt":mt.translated_string,"score":score,"compare_score":best_compare["score"],"compare_para_id":best_compare["para_id"],"para_id":mt.para_id})
         else:
             result.append({"mt":mt.translated_string,"manual":manual.text,"score":score})
-    for item in compare_list:
-        com_score=[]
-        for index,texts in enumerate(translated_strings):
-            new_score = sentence_bleu([item["mt"]],texts.text)    
-            com_score.append({"score":new_score,"text":texts.text,"para_id":index+1})
-        best_compare = max(com_score, key=lambda x: x['score'])           
-        result.append({"best_text":best_compare["text"],"manual":item["manual"],"mt":item["mt"],"compare_score":best_compare["score"],"compare_para_id":best_compare["para_id"],"para_id":item["para_id"]})
-            # Calculate a comparison score based on string similarity (e.g., Levenshtein distance)  
+    # Calculate a comparison score based on string similarity (e.g., Levenshtein distance)  
     # 1. fetch the story from the database
     # 2. compare the translated string with the original string
     # 3. high score - > positive
