@@ -1,6 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { API } from "./store/API";
+import Select from "react-select";
+import { language_list } from "./store/languages";
 
 // const Menubar = () => {
 function Menubar({
@@ -20,12 +22,16 @@ function Menubar({
     setTranslation([]);
     setResult([]);
   };
+
+  const options = language_list.map((item) => {
+    return { value: item, label: item };
+  });
   async function handleFileChosen(file) {
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
       const content = String(fileReader.result);
       const title = content?.split(/\r?\n/)[0];
-      const _storyId = title.split(" ")[1].replace(".", "");
+      const _storyId = title.split(" ")[1].split(".")[0];
       if (!_storyId || _storyId.length == 0) {
         const message = `Unable to find story from obs md file`;
         console.log(message);
@@ -61,7 +67,7 @@ function Menubar({
     console.log("translating");
     if (storyId) {
       console.log(storyId);
-      API.get(`translate/${storyId}/hin_Deva`)
+      API.get(`translate/${storyId}/${selectedLanguage.value}`)
         .then((response) => {
           console.log("Translate Success", response.data);
           setTranslated(true);
@@ -83,7 +89,7 @@ function Menubar({
     if (translated && story) {
       console.log(storyId);
       const postData = story?.story;
-      API.post(`compare/${storyId}/hin_Deva`, postData)
+      API.post(`compare/${storyId}/${selectedLanguage.value}`, postData)
         .then((response) => {
           console.log("Validate Success", response.data);
           setResult(response.data.result);
@@ -117,18 +123,18 @@ function Menubar({
         Upload
       </button>
       <div className="language-dropdown">
-        <button className="dropdown-btn">{selectedLanguage}</button>
-        <div className="dropdown-content">
-          <a href="#" onClick={() => handleLanguageSelect("English")}>
-            English
-          </a>
-          <a href="#" onClick={() => handleLanguageSelect("Spanish")}>
-            Spanish
-          </a>
-          <a href="#" onClick={() => handleLanguageSelect("French")}>
-            French
-          </a>
-        </div>
+        <Select
+          styles={{
+            // ...styles,
+            control: (base, state) => ({
+              ...base,
+              "&:hover": { borderColor: "gray" }, // border style on hover
+              border: "1px solid lightgray", // default border color
+            }),
+          }}
+          options={options}
+          onChange={(data) => setSelectedLanguage(data)}
+        />
       </div>
       <button className="Translate-btn" onClick={translate}>
         Translate

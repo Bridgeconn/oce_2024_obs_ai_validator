@@ -18,7 +18,7 @@ function Table({ storyId, story, translated, translation, result }) {
   }, [stories, storyId, setText]);
 
   useEffect(() => {
-    if (storyId && text.length > 0 && story?.story?.length > 0) {
+    if (storyId && text?.length > 0 && story?.story?.length > 0) {
       const _text = [...text];
       _text.forEach((para, i) => {
         para.trText = story?.story[i]?.text;
@@ -49,8 +49,14 @@ function Table({ storyId, story, translated, translation, result }) {
   }
   return (
     <div className="container">
-      {!story && <h2>Please upload a valid obs story</h2>}
-      <h2>{translated ? "Translated Story" : "Not Translated"}</h2>
+      {!story && <h2 className="message">Please upload an OBS story</h2>}
+      <h2 className="message">
+        {!story
+          ? ""
+          : translated
+          ? "Ready to validate"
+          : " Translate the story"}
+      </h2>
       <h1>{story?.header}</h1>
       <h2>{story?.footer}</h2>
       <div>

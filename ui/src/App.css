@@ -49,13 +49,16 @@
 }
 
 .menu button:hover {
-  background-color: #45a049;
+  background-color: #949794;
+  color: white;
 }
 
 .language-dropdown {
   position: relative;
   display: inline-block;
   border-radius: 20px;
+  width: 150px;
+  /* outline: 0; */
 }
 
 .dropdown-btn {
@@ -81,9 +84,7 @@
   background-color: #f1f1f1;
 }
 
-.language-dropdown:hover .dropdown-content {
-  display: block;
-}
+
 /* styles.css */
 
 /* Apply styles to the table */
@@ -167,4 +168,8 @@ th {
 
 .container {
   background-color: #ffffff;
+}
+.message{
+  text-align: center;
+  
 }
