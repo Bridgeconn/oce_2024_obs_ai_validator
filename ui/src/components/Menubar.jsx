@@ -124,6 +124,14 @@ function Menubar({
       </button>
       <div className="language-dropdown">
         <Select
+          styles={{
+            // ...styles,
+            control: (base, state) => ({
+              ...base,
+              "&:hover": { borderColor: "gray" }, // border style on hover
+              border: "1px solid lightgray", // default border color
+            }),
+          }}
           options={options}
           onChange={(data) => setSelectedLanguage(data)}
         />
