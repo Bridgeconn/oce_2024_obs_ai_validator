@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from db.database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 from nltk.translate.bleu_score import sentence_bleu
-
 app = FastAPI()
 
 app.add_middleware(
@@ -115,14 +114,24 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
 @app.post("/compare/{story_id}/{language_id}")
 async def compare(story_id: str, language_id:str, translated_strings: list[schemas.Translation], db: Session = Depends(get_db) ):
     mt_translation = crud.get_story(db,story_id,language_id)
+    print(mt_translation)
     result = []
+    compare_list=[]
+    compare_scores=[]
     for mt,manual in zip(mt_translation,translated_strings):
-        # sacrebleu = load_metric("sacrebleu")
-        # score = sacrebleu.compute(predictions=[b.text],references= [[a.translated_string]])
-        # score = sacrebleu.compute(predictions=[a.translated_string],references= [[b.text]])
-        score = sentence_bleu([mt.translated_string],manual.text)
-        result.append({"mt":mt.translated_string,"manual":manual.text,"score":score})
-
+        score = sentence_bleu([mt.translated_string],manual.text)    
+        if score < 0.60:
+            compare_list.append({"manual":manual.text,"mt":mt.translated_string,"para_id":mt.para_id})
+        else:
+            result.append({"mt":mt.translated_string,"manual":manual.text,"score":score})
+    for item in compare_list:
+        com_score=[]
+        for index,texts in enumerate(translated_strings):
+            new_score = sentence_bleu([item["mt"]],texts.text)    
+            com_score.append({"score":new_score,"text":texts.text,"para_id":index+1})
+        best_compare = max(com_score, key=lambda x: x['score'])           
+        result.append({"best_text":best_compare["text"],"manual":item["manual"],"mt":item["mt"],"compare_score":best_compare["score"],"compare_para_id":best_compare["para_id"],"para_id":item["para_id"]})
+            # Calculate a comparison score based on string similarity (e.g., Levenshtein distance)  
     # 1. fetch the story from the database
     # 2. compare the translated string with the original string
     # 3. high score - > positive
