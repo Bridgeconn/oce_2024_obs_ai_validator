@@ -49,6 +49,7 @@ pip install transformers
 pip install fastapi
 pip install "uvicorn[standard]"
 pip install sqlalchemy
+pip install nltk
 ```
 
 Note: The last command below installs the torch package without GPU, use this pytorch documentation Link [https://pytorch.org/get-started/locally](https://pytorch.org/get-started/locally) for MAC o GPU computers configurations.

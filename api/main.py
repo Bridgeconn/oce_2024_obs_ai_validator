@@ -5,7 +5,7 @@ import json
 from sqlalchemy.orm import Session
 from db.database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
-from datasets import load_metric
+from nltk.translate.bleu_score import sentence_bleu
 
 app = FastAPI()
 
@@ -114,13 +114,14 @@ async def translate(story_id: int, language_id:str, db: Session = Depends(get_db
 
 @app.post("/compare/{story_id}/{language_id}")
 async def compare(story_id: str, language_id:str, translated_strings: list[schemas.Translation], db: Session = Depends(get_db) ):
-    translation = crud.get_story(db,story_id,language_id)
+    mt_translation = crud.get_story(db,story_id,language_id)
     result = []
-    for a,b in zip(translation,translated_strings):
-        sacrebleu = load_metric("sacrebleu")
+    for mt,manual in zip(mt_translation,translated_strings):
+        # sacrebleu = load_metric("sacrebleu")
         # score = sacrebleu.compute(predictions=[b.text],references= [[a.translated_string]])
-        score = sacrebleu.compute(predictions=[a.translated_string],references= [[b.text]])
-        result.append({"mt":a.translated_string,"manual":b.text,"score":score})
+        # score = sacrebleu.compute(predictions=[a.translated_string],references= [[b.text]])
+        score = sentence_bleu([mt.translated_string],manual.text)
+        result.append({"mt":mt.translated_string,"manual":manual.text,"score":score})
 
     # 1. fetch the story from the database
     # 2. compare the translated string with the original string
