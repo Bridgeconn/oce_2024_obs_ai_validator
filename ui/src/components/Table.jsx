@@ -18,7 +18,7 @@ function Table({ storyId, story, translated, translation, result }) {
   }, [stories, storyId, setText]);
 
   useEffect(() => {
-    if (storyId && text.length > 0 && story?.story?.length > 0) {
+    if (storyId && text?.length > 0 && story?.story?.length > 0) {
       const _text = [...text];
       _text.forEach((para, i) => {
         para.trText = story?.story[i]?.text;
