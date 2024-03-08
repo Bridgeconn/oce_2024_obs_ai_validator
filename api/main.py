@@ -65,6 +65,7 @@ async def split_file(item: schemas.MDFile):
 async def translate(story_id: int, language_id:str, db: Session = Depends(get_db)):
     json_file = open('OBSTextData.json', 'r', encoding='utf-8')
     data = json.load(json_file)
+    eng_obs=crud.get_eng_story(db,story_id)
     # Get story from DB
     translation = crud.get_story(db,story_id,language_id)
     # Translate Story
@@ -132,3 +133,17 @@ async def compare(story_id: str, language_id:str, translated_strings: list[schem
     # 7. if the max score is the same as the para number sent in url -> positive
     # 8. else negative,  give score with the maximum similarity and return para no and corresponding string
     return {"story_id": story_id, "language_id": language_id, "result":result}
+
+
+
+@app.get("/initialize_obs")
+async def initialize_obs( db: Session = Depends(get_db)):
+    json_file = open('OBSTextData.json', 'r', encoding='utf-8')
+    data = json.load(json_file)
+    for stories in data:
+        story_id=stories["storyId"]
+        story_data=stories["story"]
+        for para in story_data:
+            crud.save_eng_obs_story(db=db, story_id=story_id,para_id=para["id"],url=para['url'],text=para["text"])
+           
+    return {"message":"Successfully initialized english obs story in db"}

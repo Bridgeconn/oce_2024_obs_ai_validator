@@ -3,8 +3,6 @@ from sqlalchemy.orm import Session
 from . import models, schemas
 
 def get_story(db: Session,story_id:str,language_id:str):
-    print(story_id)
-    print(language_id)
     return db.query(models.Translations).filter(models.Translations.story_id == story_id).filter(models.Translations.language_id == language_id).all()
 
 def save_story(db: Session, story_id:int,language_id:str,para_id:int, nllb_model_id:str,original_string:str,translated_string:str):
@@ -13,3 +11,13 @@ def save_story(db: Session, story_id:int,language_id:str,para_id:int, nllb_model
     db.commit()
     db.refresh(db_story)
     return db_story
+
+def save_eng_obs_story(db: Session, story_id:int,para_id:int,url:str, text:str):
+    db_obs_story = models.English_OBS(story_id=story_id,para_id=para_id,url=url,text=text)
+    db.add(db_obs_story)
+    db.commit()
+    db.refresh(db_obs_story)
+    return db_obs_story
+
+def get_eng_story(db: Session,story_id:int):
+    return db.query(models.English_OBS).filter(models.English_OBS.story_id == story_id).all()
