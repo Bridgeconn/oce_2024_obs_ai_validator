@@ -63,38 +63,28 @@ async def split_file(item: schemas.MDFile):
 
 @app.get("/translate/{story_id}/{language_id}")
 async def translate(story_id: int, language_id:str, db: Session = Depends(get_db)):
-    json_file = open('OBSTextData.json', 'r', encoding='utf-8')
-    data = json.load(json_file)
-    eng_obs=crud.get_eng_story(db,story_id)
-    # Get story from DB
+    eng_story = crud.get_eng_story(db,story_id)
+    if(len(eng_story)==0):
+      raise HTTPException(status_code=404, detail="DB not initialized or Story not found!!")
     translation = crud.get_story(db,story_id,language_id)
-    # Translate Story
-    filtered_elements = [el for el in data if el['storyId'] == story_id]     
-    
-    if(len(filtered_elements)==0):
-      raise HTTPException(status_code=404, detail="Story not found!!")
+    if len(translation)==len(eng_story):
+        return {"story_id": story_id, "language_id": language_id, "translation": translation}
     
     # Setup Translator
     model = AutoModelForSeq2SeqLM.from_pretrained(nllb_model)
     tokenizer = AutoTokenizer.from_pretrained(nllb_model)
     translator = pipeline('translation', model=model, tokenizer=tokenizer, src_lang="eng_Latn", tgt_lang=language_id, max_length = 512)
-        
-    story = filtered_elements[0]    
-    story_array = story['story']
-    if len(translation)==len(story_array):
-        return {"story_id": story_id, "language_id": language_id, "translation": translation}
     translation = []
-    for story in story_array:
-        split_lines = story['text']
+    for story in eng_story:
+        split_lines = story.text
         split_lines = split_lines.split('.')
         translated_string = ""
         for line in split_lines:
             if(len(line)>0):
                 text=translator(line)
                 translated_string += " " + text[0]['translation_text'].strip()
-        translation.append({'original': story['text'], 'translated': translated_string})
-        crud.save_story(db=db, story_id=story_id,language_id=language_id,para_id=story['id'], nllb_model_id=nllb_model,original_string=story['text'],translated_string=translated_string)
-        # return db_user
+        translation.append({'original': story.text, 'translated': translated_string})
+        crud.save_story(db=db, story_id=story_id,language_id=language_id,para_id=story.id, nllb_model_id=nllb_model,original_string=story.text,translated_string=translated_string)
     # Get the sentence from DB if exists
     # 1. Check if story_id and language_id combo exist then return saved data ## Done
     # Translate the english story into the target language and save in the database 
