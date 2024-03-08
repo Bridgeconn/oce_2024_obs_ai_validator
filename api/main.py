@@ -44,7 +44,7 @@ async def split_file(item: schemas.MDFile):
     """
     story = { "header":"", "footer":"","story":[]}
     s=[]
-
+    text = ""
     # lines =[item.md]
     lines = item.md.splitlines()
     for line in lines:
@@ -52,12 +52,15 @@ async def split_file(item: schemas.MDFile):
             story["header"]= line
         elif line.startswith("_"):
             story["footer"]= line
+            s.append({ "text":text})
+            text = ""
         elif line.strip() != "":
             if line.startswith("![OBS Image]"):
-                url = line
+                if text !="":
+                    s.append({ "text":text})
+                    text = ""
             else:
-                obj = { "text":line}
-                s.append(obj)
+                text = text+ line
     story["story"]=s
     return story
 
@@ -124,8 +127,6 @@ async def compare(story_id: str, language_id:str, translated_strings: list[schem
     # 8. else negative,  give score with the maximum similarity and return para no and corresponding string
     return {"story_id": story_id, "language_id": language_id, "result":result}
 
-
-
 @app.get("/initialize_obs")
 async def initialize_obs( db: Session = Depends(get_db)):
     json_file = open('OBSTextData.json', 'r', encoding='utf-8')
@@ -137,3 +138,11 @@ async def initialize_obs( db: Session = Depends(get_db)):
             crud.save_eng_obs_story(db=db, story_id=story_id,para_id=para["id"],url=para['url'],text=para["text"])
            
     return {"message":"Successfully initialized english obs story in db"}
+
+@app.delete("/delete/{story_id}/{language_id}")
+async def delete_story(story_id: int, language_id:str, db: Session = Depends(get_db)):
+    translation = crud.get_story(db,story_id,language_id)
+    if len(translation) == 0:
+              raise HTTPException(status_code=404, detail="Story not found!!")
+    delete_translation = crud.delete_story(db,story_id,language_id)
+    return {"message":"Translation Deleted"}

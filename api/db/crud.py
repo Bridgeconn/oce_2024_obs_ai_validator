@@ -21,3 +21,9 @@ def save_eng_obs_story(db: Session, story_id:int,para_id:int,url:str, text:str):
 
 def get_eng_story(db: Session,story_id:int):
     return db.query(models.English_OBS).filter(models.English_OBS.story_id == story_id).all()
+
+def delete_story(db: Session,story_id:str,language_id:str):
+    db_story = db.query(models.Translations).filter(models.Translations.story_id == story_id).filter(models.Translations.language_id == language_id)
+    db_story.delete()
+    db.commit()
+    return db_story
