@@ -10,6 +10,7 @@ function App() {
   const [story, setStory] = useState(null);
   const [translation, setTranslation] = useState(null);
   const [result, setResult] = useState(null);
+  const [validated, setValidated] = useState(false);
   return (
     <>
       <Navbar />
@@ -22,6 +23,7 @@ function App() {
         setTranslated={setTranslated}
         setTranslation={setTranslation}
         setResult={setResult}
+        setValidated={setValidated}
       />
       <div>
         <Table
@@ -29,6 +31,7 @@ function App() {
           story={story}
           translated={translated}
           translation={translation}
+          validated={validated}
           result={result}
         />
       </div>
