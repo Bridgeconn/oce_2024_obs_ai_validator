@@ -13,3 +13,9 @@ def save_story(db: Session, story_id:int,language_id:str,para_id:int, nllb_model
     db.commit()
     db.refresh(db_story)
     return db_story
+
+def delete_story(db: Session,story_id:str,language_id:str):
+    db_story = db.query(models.Translations).filter(models.Translations.story_id == story_id).filter(models.Translations.language_id == language_id)
+    db_story.delete()
+    db.commit()
+    return db_story
