@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { stories } from "../assets/OBSTextData";
-function Table({ storyId, story, translated, translation,validated, result }) {
+function Table({ storyId, story, translated, translation, validated, result }) {
   const [text, setText] = useState([]);
   useEffect(() => {
     if (storyId) {
@@ -43,12 +43,12 @@ function Table({ storyId, story, translated, translation,validated, result }) {
   if (storyId && text && translated && result?.length > 0) {
     text.forEach((para, i) => {
       para.score = result[i]?.score;
-      para.best_text_score = result[i]?.compare_score
-      para.best_text_id = result[i]?.compare_para_id
+      para.best_text_score = result[i]?.compare_score;
+      para.best_text_id = result[i]?.compare_para_id;
     });
   }
   return (
-      <div className="container">
+    <div className="container">
       {!story && <h2 className="message">Please upload an OBS story</h2>}
       <h2 className="message">
         {!story
@@ -98,12 +98,36 @@ function Table({ storyId, story, translated, translation,validated, result }) {
                     </div>
                   </td>
                   <td>
-                   {validated?
-                    <div>{story?.score > 0.6? <button style={{backgroundColor:"green",color:"white"}}>{"PASS score = " + story?.score}</button>:<button style={{backgroundColor:"red",color:"white"}} >
-                    {story?.score===story?.best_text_score ? "FAIL score = " + story?.score:
-                    "This is in wrong order and the best score can be found be in para " + story?.best_text_id+" and is " + story?.best_text_score
-                    }</button>}</div>:""}
-                   
+                    {validated ? (
+                      <div>
+                        {story?.score > 0.6 ? (
+                          <img
+                            src="./src/assets/Pass.png"
+                            width="50px"
+                            height="50px"
+                            className="image-container"
+                            title={"PASS score = " + story?.score}
+                          />
+                        ) : (
+                          <img
+                            src="./src/assets/Fail.png"
+                            width="50px"
+                            height="50px"
+                            className="image-container"
+                            title={
+                              story?.score === story?.best_text_score
+                                ? "FAIL score = " + story?.score
+                                : "This is in wrong order and the best score can be found be in para " +
+                                  story?.best_text_id +
+                                  " and is " +
+                                  story?.best_text_score
+                            }
+                          />
+                        )}
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </td>
                 </tr>
               );
