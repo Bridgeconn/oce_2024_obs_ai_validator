@@ -4,7 +4,6 @@ import { API } from "./store/API";
 import Select from "react-select";
 import { language_list } from "./store/languages";
 
-// const Menubar = () => {
 function Menubar({
   story,
   storyId,
@@ -14,6 +13,7 @@ function Menubar({
   setTranslated,
   setTranslation,
   setResult,
+  setValidated
 }) {
   const [selectedLanguage, setSelectedLanguage] = useState("Language Select");
   const resetData = () => {
@@ -96,6 +96,7 @@ function Menubar({
         .then((response) => {
           console.log("Validate Success", response.data);
           setResult(response.data.result);
+          setValidated(true)
         })
         .catch(function (error) {
           console.log("Error comparing file!", error);
