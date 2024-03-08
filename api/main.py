@@ -44,7 +44,7 @@ async def split_file(item: schemas.MDFile):
     """
     story = { "header":"", "footer":"","story":[]}
     s=[]
-
+    text = ""
     # lines =[item.md]
     lines = item.md.splitlines()
     for line in lines:
@@ -52,12 +52,15 @@ async def split_file(item: schemas.MDFile):
             story["header"]= line
         elif line.startswith("_"):
             story["footer"]= line
+            s.append({ "text":text})
+            text = ""
         elif line.strip() != "":
             if line.startswith("![OBS Image]"):
-                url = line
+                if text !="":
+                    s.append({ "text":text})
+                    text = ""
             else:
-                obj = { "text":line}
-                s.append(obj)
+                text = text+ line
     story["story"]=s
     return story
 
