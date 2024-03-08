@@ -135,3 +135,11 @@ async def compare(story_id: str, language_id:str, translated_strings: list[schem
     # 7. if the max score is the same as the para number sent in url -> positive
     # 8. else negative,  give score with the maximum similarity and return para no and corresponding string
     return {"story_id": story_id, "language_id": language_id, "result":result}
+
+@app.delete("/delete/{story_id}/{language_id}")
+async def delete_story(story_id: int, language_id:str, db: Session = Depends(get_db)):
+    translation = crud.get_story(db,story_id,language_id)
+    if len(translation) == 0:
+              raise HTTPException(status_code=404, detail="Story not found!!")
+    delete_translation = crud.delete_story(db,story_id,language_id)
+    return {"message":"Translation Deleted"}
