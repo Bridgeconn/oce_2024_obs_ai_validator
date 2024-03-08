@@ -32,7 +32,8 @@ function Menubar({
     fileReader.onloadend = () => {
       const content = String(fileReader.result);
       const title = content?.split(/\r?\n/)[0];
-      const _storyId = title.split(" ")[1].split(".")[0];
+      // const _storyId = typeof(title.split(" ")[1].split(".")[0])==="string"?parseInt(file.name.split(".")[0]):title.split(" ")[1].split(".")[0] ;
+      const _storyId = parseInt(file.name.split(".")[0]);
       if (!_storyId || _storyId.length == 0) {
         const message = `Unable to find story from obs md file`;
         console.log(message);
