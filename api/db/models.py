@@ -16,3 +16,11 @@ class Translations(Base):
     translated_string = Column(String)
 
 # table - id, story_id, language_id, para_id, original_string, translated_string
+class English_OBS(Base):
+    __tablename__ = "english_obs"
+
+    id = Column(Integer, primary_key=True)
+    story_id = Column(Integer, index=True)
+    para_id = Column(Integer)
+    url=Column(String)
+    text = Column(String)
