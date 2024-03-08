@@ -24,9 +24,9 @@ function Menubar({
   };
   const [translating, setTranslating] = useState(false);
 
-  const options = language_list.map((item) => {
-    return { value: item, label: item };
-  });
+  // const options = language_list.map((item) => {
+  //   return { value: item, label: item };
+  // });
   async function handleFileChosen(file) {
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
@@ -136,7 +136,7 @@ function Menubar({
               fontFamily: "Arial",
             }),
           }}
-          options={options}
+          options={language_list}
           onChange={(data) => setSelectedLanguage(data)}
         />
       </div>
