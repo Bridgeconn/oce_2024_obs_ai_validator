@@ -107,15 +107,15 @@ async def compare(story_id: str, language_id:str, translated_strings: list[schem
     result = []
     for mt,manual in zip(mt_translation,translated_strings):
         score = sentence_bleu([mt.translated_string],manual.text)    
-        if score < 0.60:
+        if score < 0.50:
             com_score=[]
             for index,texts in enumerate(translated_strings):
                 new_score = sentence_bleu([mt.translated_string],texts.text)    
-                com_score.append({"score":new_score,"text":texts.text,"para_id":index+1})
+                com_score.append({"score":round(new_score,4),"text":texts.text,"para_id":index+1})
             best_compare = max(com_score, key=lambda x: x['score'])           
-            result.append({"best_text":best_compare["text"],"manual":manual.text,"mt":mt.translated_string,"score":score,"compare_score":best_compare["score"],"compare_para_id":best_compare["para_id"],"para_id":mt.para_id})
+            result.append({"best_text":best_compare["text"],"manual":manual.text,"mt":mt.translated_string,"score":round(score,4),"compare_score":round(best_compare["score"],4),"compare_para_id":best_compare["para_id"],"para_id":mt.para_id})
         else:
-            result.append({"mt":mt.translated_string,"manual":manual.text,"score":score})
+            result.append({"mt":mt.translated_string,"manual":manual.text,"score":round(score,4)})
     # Calculate a comparison score based on string similarity (e.g., Levenshtein distance)  
     # 1. fetch the story from the database
     # 2. compare the translated string with the original string

@@ -54,7 +54,9 @@ function Table({ storyId, story, translated, translation, validated, result }) {
         {!story
           ? ""
           : translated
-          ? "Ready to validate"
+          ? validated
+            ? ""
+            : "Ready to validate"
           : " Translate the story"}
       </h2>
       <h1>{story?.header?.replace("#", "")}</h1>
@@ -63,7 +65,7 @@ function Table({ storyId, story, translated, translation, validated, result }) {
         <table>
           <thead>
             <tr>
-              <th>SNo.</th>
+              <th>Para</th>
               <th>Image</th>
               <th>English</th>
               <th>Uploaded</th>
@@ -100,7 +102,7 @@ function Table({ storyId, story, translated, translation, validated, result }) {
                   <td>
                     {validated ? (
                       <div>
-                        {story?.score > 0.6 ? (
+                        {story?.score > 0.5 ? (
                           <img
                             src="./src/assets/Pass.png"
                             width="50px"
@@ -110,17 +112,17 @@ function Table({ storyId, story, translated, translation, validated, result }) {
                           />
                         ) : (
                           <img
-                            src="./src/assets/Fail.png"
-                            width="50px"
-                            height="50px"
+                            src="./src/assets/Warning.png"
+                            width="60px"
+                            height="60px"
                             className="image-container"
                             title={
                               story?.score === story?.best_text_score
                                 ? "FAIL score = " + story?.score
-                                : "This is in wrong order and the best score can be found be in para " +
+                                : "Check the translation as the best score can be found be in para " +
                                   story?.best_text_id +
-                                  " and is " +
-                                  story?.best_text_score
+                                  " with score = " +
+                                  story?.best_text_score + " and FAIL score = " + story?.score
                             }
                           />
                         )}
