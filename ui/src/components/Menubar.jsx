@@ -65,6 +65,11 @@ function Menubar({
     await handleFileChosen(file);
   };
   const translate = () => {
+    if (selectedLanguage === "Language Select") {
+      alert("Please select your file language before translating.");
+      return;
+    }
+
     console.log("translating");
     setTranslating(true);
     if (storyId) {
