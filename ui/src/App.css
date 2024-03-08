@@ -18,8 +18,9 @@
   font-size: 10px;
   justify-content: center;
   top : 0; */
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: system-ui;
   font-size: 20px;
+  font-weight: bold;
   text-align: center;
   padding: 5px;
 }
@@ -52,7 +53,14 @@
   background-color: #949794;
   color: white;
 }
-
+.translate-dis:hover {
+  background-color: #949794;
+  color: white;
+}
+.translate-dis {
+  background-color: #949794;
+  color: white;
+}
 .language-dropdown {
   position: relative;
   display: inline-block;
@@ -84,7 +92,6 @@
   background-color: #f1f1f1;
 }
 
-
 /* styles.css */
 
 /* Apply styles to the table */
@@ -112,7 +119,10 @@ tr:nth-child(even) {
 th {
   /* background-color: #4CAF50; */
   color: rgb(19, 18, 18);
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: system-ui;
+  font-weight: normal;
+  background: #e8e9e8;
+  text-align: center;
 }
 .image-radius {
   border-radius: 10px; /* Apply border radius to make the image circular */
@@ -127,13 +137,6 @@ th {
   width: 320px;
   height: 180pz;
 }
-
-/* .circle {
-  background: rgb(10, 10, 10);
-  border-radius: 50%;
-  width: 100px;
-  height: 100px;
-} */
 
 .text-bg {
   height: 160px;
@@ -168,8 +171,9 @@ th {
 
 .container {
   background-color: #ffffff;
+  font-family: system-ui;
+  font-weight: normal;
 }
-.message{
+.message {
   text-align: center;
-  
 }

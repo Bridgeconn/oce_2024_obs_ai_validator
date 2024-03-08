@@ -22,6 +22,7 @@ function Menubar({
     setTranslation([]);
     setResult([]);
   };
+  const [translating, setTranslating] = useState(false);
 
   const options = language_list.map((item) => {
     return { value: item, label: item };
@@ -65,12 +66,14 @@ function Menubar({
   };
   const translate = () => {
     console.log("translating");
+    setTranslating(true);
     if (storyId) {
       console.log(storyId);
       API.get(`translate/${storyId}/${selectedLanguage.value}`)
         .then((response) => {
           console.log("Translate Success", response.data);
           setTranslated(true);
+          setTranslating(false);
           setTranslation(response.data);
         })
         .catch(function (error) {
@@ -130,15 +133,23 @@ function Menubar({
               ...base,
               "&:hover": { borderColor: "gray" }, // border style on hover
               border: "1px solid lightgray", // default border color
+              fontFamily: "Arial",
             }),
           }}
           options={options}
           onChange={(data) => setSelectedLanguage(data)}
         />
       </div>
-      <button className="Translate-btn" onClick={translate}>
-        Translate
-      </button>
+
+      {translating ? (
+        <button className="translate-dis" disabled>
+          {" "}
+          Translating
+        </button>
+      ) : (
+        <button onClick={translate}> Translate </button>
+      )}
+
       <button className="validate-btn" onClick={validate}>
         Validate
       </button>

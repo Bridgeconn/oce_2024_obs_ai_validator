@@ -57,8 +57,8 @@ function Table({ storyId, story, translated, translation, result }) {
           ? "Ready to validate"
           : " Translate the story"}
       </h2>
-      <h1>{story?.header}</h1>
-      <h2>{story?.footer}</h2>
+      <h1>{story?.header?.replace("#", "")}</h1>
+      {/* <h2>{story?.footer}</h2> */}
       <div>
         <table>
           <thead>
