@@ -1,6 +1,8 @@
 // @ts-check
 
 import { defineConfig, devices } from '@playwright/test';
+// import { allure } from "allure-playwright";
+// import { testPlanFilter } from "allure-playwright/dist/testplan";
 
 /**
  * Read environment variables from file.
@@ -12,7 +14,7 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default {
-  testDir: '',
+  testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -25,6 +27,8 @@ export default {
   
  
   reporter: 'html',
+  // grep: testPlanFilter(),
+  // reporter: [["line"], ["allure-playwright"],['html']],
  
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -33,7 +37,7 @@ export default {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    headless : false
+    headless : true
   },
 
   /* Configure projects for major browsers */

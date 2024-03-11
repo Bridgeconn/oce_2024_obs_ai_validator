@@ -17,6 +17,6 @@ test("Validate", async({browser, page}) => {
     await page.getByRole('button', { name: 'Translate' }).click();
     await page.waitForLoadState("networkidle");
     await page.getByRole('button', { name: 'Validate' }).click();
-    
+    await page.getByTitle("PASS score = 0.5761").isVisible();
 
 });

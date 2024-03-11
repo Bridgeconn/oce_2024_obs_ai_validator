@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-test("Verifying Title", async({browser, page}) => { 
+test("Upload", async({browser, page}) => { 
     //Creating new default cognito instance and page without using global variables from playwright
    
    
