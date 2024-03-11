@@ -63,7 +63,7 @@ pip install torch --index-url https://download.pytorch.org/whl/cpu
 Windows CPU
 
 ```
-pip3 install torch torchvision torchaudio
+pip install torch
 ```
 
 ## To run
@@ -81,7 +81,7 @@ source venv/bin/activate
 Windows
 
 ```
-venv\Scripts\activat
+venv\Scripts\activate
 ```
 
 2. Start the Fast API server
@@ -93,3 +93,7 @@ uvicorn main:app --reload
 The Fast API server is now running on your local machine on the default port 8000 i.e. http://127.0.0.1:8000.
 
 The swagger docs for the API are available at [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+3. Initialize the DB
+
+Run this url (http://127.0.0.1:8000/initialize_obs) in the browser after starting the Fast API server to initialize the database. This populates the database with english open bible stories.
