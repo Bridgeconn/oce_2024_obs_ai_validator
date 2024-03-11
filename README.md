@@ -31,4 +31,5 @@ This template provides a minimal setup to get React working in Vite with HMR and
 See the ui app folder [README](/ui/README.md) for more details on how to deploy the web service.
 
 <h3>Architecture</h3>
+
 ![architecture](/ui/src/assets/architecture.png)
