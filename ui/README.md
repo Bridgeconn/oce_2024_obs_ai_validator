@@ -11,7 +11,6 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-
 ## Prerequisites
 
 - [Node JS](https://nodejs.org/en/)
@@ -40,3 +39,14 @@ Clone the [git repository](https://github.com/Bridgeconn/oce_2024_obs_ai_validat
 <!-- ## Production Deployment Steps
 
 ?? -->
+
+### Test Automation using Playwright
+
+- Install playwright extension in the UI , using this command
+  `npm init playwright`
+- Add browsers in the playwright configuration file( optional or user can use the default browser chrome)
+- To run a particular test , using the command
+  `npx playwright test your_file.spec.ts`
+- To run all test together
+  `npx playwright test`
+- After running the tests , to view the HTML report `npx playwright show-report`
