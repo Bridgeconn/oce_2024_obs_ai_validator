@@ -1,6 +1,6 @@
 # [OBS AI VALIDATOR](https://github.com/Bridgeconn/oce_2024_obs_ai_validator)
 
-This service enables the QA (content) team to use AI to assist them in checking the content of Oral Bible Stories. All Indian gateway languages are supported by this service. There is currently only support for MD files; support for USFM files will be added in the future.
+This service enables the QA (content) team to use AI to assist them in checking the content of Open Bible Stories. All Indian gateway languages are supported by this service. There is currently only support for MD files; support for USFM files will be added in the future.
 
 <h3> Workflow </h3>
 

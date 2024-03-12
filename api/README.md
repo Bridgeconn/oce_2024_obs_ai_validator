@@ -39,7 +39,7 @@ source venv/bin/activate
 Windows
 
 ```
-venv\Scripts\activat
+venv\Scripts\activate
 ```
 
 3. Install the requirements
