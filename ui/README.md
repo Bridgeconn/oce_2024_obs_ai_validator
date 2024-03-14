@@ -40,22 +40,13 @@ Clone the [git repository](https://github.com/Bridgeconn/oce_2024_obs_ai_validat
 
 ?? -->
 
-### Test Automation using Playwright
+## Test Automation using Playwright
 
-1. Install playwright extension in the UI , using this command
-   `npm init playwright`
-2. Choose the language to do the script
-   `TypeScript / JavaScript`
-3. Choose the directory to write your tests
-   by default playwright suggests `tests`
-4. Choose `yes` to github workflow
-5. Choose `yes` to install playwright browsers
-6. Choose `yes` to install playwright operating system dependencies
-7. Create test files under `tests` directory, save your testfile with extension
-   `yourFileName.spec.js`
-8. To run a particular test , using the command
-   `npx playwright test your_file.spec.ts`
-9. To run all test together
+We have written some playwright tests to test the application.
+To run the tests ensure you run the API and UI code as per the README.md in the 2 folders and follow the steps below.
+
+1. To run all the playwright tests
    `npx playwright test`
-10. After running the tests , to view the HTML report
-    `npx playwright show-report`
+2. After running the tests , to view the HTML report
+   `npx playwright show-report`
+3. To view the testing screenshots open the ui>test-results folder
