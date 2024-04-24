@@ -104,7 +104,7 @@ function Table({ storyId, story, translated, translation, validated, result }) {
                       <div>
                         {story?.score > 0.5 ? (
                           <img
-                            src="./src/assets/Pass.png"
+                            src="Pass.png"
                             width="50px"
                             height="50px"
                             className="image-container"
@@ -112,17 +112,20 @@ function Table({ storyId, story, translated, translation, validated, result }) {
                           />
                         ) : (
                           <img
-                            src="./src/assets/Warning.png"
+                            src="Warning.png"
                             width="60px"
                             height="60px"
                             className="image-container"
                             title={
+                              story?.best_text_score === undefined ||
                               story?.score === story?.best_text_score
                                 ? "FAIL score = " + story?.score
                                 : "Check the translation as the best score can be found be in para " +
                                   story?.best_text_id +
                                   " with score = " +
-                                  story?.best_text_score + " and FAIL score = " + story?.score
+                                  story?.best_text_score +
+                                  " and FAIL score = " +
+                                  story?.score
                             }
                           />
                         )}

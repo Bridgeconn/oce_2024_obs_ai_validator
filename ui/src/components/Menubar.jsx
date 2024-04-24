@@ -13,7 +13,7 @@ function Menubar({
   setTranslated,
   setTranslation,
   setResult,
-  setValidated
+  setValidated,
 }) {
   const [selectedLanguage, setSelectedLanguage] = useState("Language Select");
   const resetData = () => {
@@ -21,6 +21,7 @@ function Menubar({
     setTranslated(false);
     setTranslation([]);
     setResult([]);
+    setValidated(false);
   };
   const [translating, setTranslating] = useState(false);
 
@@ -102,7 +103,7 @@ function Menubar({
         .then((response) => {
           console.log("Validate Success", response.data);
           setResult(response.data.result);
-          setValidated(true)
+          setValidated(true);
         })
         .catch(function (error) {
           console.log("Error comparing file!", error);
